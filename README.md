@@ -1,7 +1,5 @@
 # Illustration:
-
-![Currencty Exchange Service Application](https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png=250x250)
-
+<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png width="250" height="250">
 # Requirement Analysis:
 
 Assumption: this is a feature developed for a game or a sets of games.
