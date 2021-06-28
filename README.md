@@ -81,6 +81,11 @@ https://github.com/DatTVu/aws-cdk-examples/tree/master/typescript/api-cors-lambd
 6. One currency to another: should display the correct result
 7. Wrong currency format: should return an error to users.
 
+# DISCLAIMERS FOR BUILD AND DEPLOY:
+
+Currently the credentails and keys in code are dummy. To deploy, follow the steps <br/>
+below to acquire the credentials and keys required.
+
 # Back End Deploy(Deploy before Frontend):
 
 Prequisite: git, aws-cliv2, nodejs installed.
@@ -135,6 +140,9 @@ After finish with the prototype: use cdk destroy to release AWS resources.
    main.
 4. [BUG][high][FrontEnd] Web doesn't work yet. Since CORS hasn't been enable. So web browser <br/>
    can't make request to the backend.
+5. [BUG][high][FrontEnd][BackEnd] Refactor and keep credentials/access key in .env file or use
+   AWS KMS to manage it for us. Currently the credentails and keys in code are dummy. They are not
+   real. 
 
 # Future Plan and Suggestion:
 
