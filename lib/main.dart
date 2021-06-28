@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:country_currency_pickers/country.dart';
 import 'package:country_currency_pickers/country_pickers.dart';
 import 'package:country_currency_pickers/currency_picker_dropdown.dart';
@@ -34,6 +31,9 @@ class Home extends StatelessWidget {
     final String defaultConvertCurrencyCode = myCountryCode == US_COUNTRY_CODE
         ? EUROPE_CURRENCY_CODE
         : US_CURRENCY_CODE;
+    currencyController.changeBaseCurrency(RxString(myCurrentCurrrencyCode));
+    currencyController
+        .changeConvertCurrency(RxString(defaultConvertCurrencyCode));
     return Scaffold(
       // Use Obx(()=> to update Text() whenever count is changed.
       appBar: AppBar(title: Text("Currency Exchange Service")),
@@ -46,15 +46,13 @@ class Home extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Obx(() => Text(
-                      "${currencyController.baseCurrency}",
-                      style: TextStyle(color: Colors.red),
-                    )),
+                Text(currencyController.baseAmount,
+                    style: TextStyle(color: Colors.red)),
                 SizedBox(
                   width: 20,
                 ),
                 _buildCurrencyPickerDropDown(
-                    myCurrentCurrrencyCode, currencyController)
+                    myCurrentCurrrencyCode, currencyController, true)
               ],
             ),
             SizedBox(
@@ -63,12 +61,14 @@ class Home extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Obx(() => Text("${currencyController.baseCurrency}")),
+                Obx(() => Text(
+                    currencyController.convertAmount.value.toString(),
+                    style: TextStyle(color: Colors.red))),
                 SizedBox(
                   width: 20,
                 ),
                 _buildCurrencyPickerDropDown(
-                    defaultConvertCurrencyCode, currencyController)
+                    defaultConvertCurrencyCode, currencyController, false)
               ],
             ),
             SizedBox(
@@ -82,6 +82,7 @@ class Home extends StatelessWidget {
                 child: Text("Get Latest Rate"),
                 onPressed: () {
                   var test = _getLatestExchangerate(
+                      currencyController,
                       currencyController.baseCurrency.string,
                       currencyController.convertCurrency.string);
                 }),
@@ -91,11 +92,14 @@ class Home extends StatelessWidget {
   }
 }
 
-Future<dynamic> _getLatestExchangerate(
+Future<dynamic> _getLatestExchangerate(CurrencyExchangeController controller,
     String baseCurrency, String convertCurrency) async {
   try {
     final response = await currencyExchangeApiProvider.getlatestexchangerate();
-    print(response);
+    if (response["base"] == EUROPE_CURRENCY_CODE) {
+      String rate = response["rates"][convertCurrency].toString();
+      controller.updateConvertAmount(rate);
+    }
     return response;
   } catch (error) {
     print(error);
@@ -105,12 +109,18 @@ Future<dynamic> _getLatestExchangerate(
 CurrencyPickerDropdown _buildCurrencyPickerDropDown(
         //TO DO: Bug here, the flag doesn't match the initial country
         String countryCode,
-        CurrencyExchangeController currencyController) =>
+        CurrencyExchangeController currencyController,
+        bool isBase) =>
     CurrencyPickerDropdown(
       initialValue: countryCode,
       itemBuilder: _buildCurrencyDropdownItem,
       onValuePicked: (Country country) {
-        currencyController.changeBaseCurrency(RxString(country.currencyCode));
+        if (isBase) {
+          currencyController.changeBaseCurrency(RxString(country.currencyCode));
+        } else {
+          currencyController
+              .changeConvertCurrency(RxString(country.currencyCode));
+        }
       },
     );
 
