@@ -81,6 +81,11 @@ https://github.com/DatTVu/aws-cdk-examples/tree/master/typescript/api-cors-lambd
 6. One currency to another: should display the correct result
 7. Wrong currency format: should return an error to users.
 
+# DISCLAIMERS FOR BUILD AND DEPLOY:
+
+Currently the credentails and keys in code are dummy. To deploy, follow the steps <br/>
+below to acquire the credentials and keys required.
+
 # Back End Deploy(Deploy before Frontend):
 
 Prequisite: git, aws-cliv2, nodejs installed.
@@ -112,8 +117,15 @@ After finish with the prototype: use cdk destroy to release AWS resources.
 4. Get base_url from result of backend deployment. Base_url is the endpoint <br/>
    of API Gateway.Put base_url in api_provider.dart.
 5. Run: flutter pub get
-6. Run: flutter build apk to build Android. The build should be in <br/>
+6. Install Android Studio.
+7. Create an Android Virtual Device.
+6. In VSCode, CTRL + SHIFT + P. Flutter: Select Device. Select the Android Virtual Device.
+6. In VSCode, Hit Run and Debug.
+7. To run on real device: flutter build apk to build Android. The build should be in <br/>
 \currencyexchangefrontend\build\app\outputs\apk\release
+8. To install the apk, copy it to your device. Locate the apk using file explorer or 
+   ES Explorer. Click install and install anyway. You may have to enable developer mode
+   before able to install the apk.
 
 # Remaining Issues:
 
@@ -128,6 +140,9 @@ After finish with the prototype: use cdk destroy to release AWS resources.
    main.
 4. [BUG][high][FrontEnd] Web doesn't work yet. Since CORS hasn't been enable. So web browser <br/>
    can't make request to the backend.
+5. [BUG][high][FrontEnd][BackEnd] Refactor and keep credentials/access key in .env file or use
+   AWS KMS to manage it for us. Currently the credentails and keys in code are dummy. They are not
+   real. 
 
 # Future Plan and Suggestion:
 
