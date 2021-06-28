@@ -1,6 +1,6 @@
 # Illustration:
 
-![Currencty Exchange Service Application](https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png)
+![Currencty Exchange Service Application](https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png=250x250)
 
 # Requirement Analysis:
 
