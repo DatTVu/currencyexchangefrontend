@@ -1,3 +1,7 @@
+# Illustration:
+
+![Currencty Exchange Service Application](https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png)
+
 # Requirement Analysis:
 
 Assumption: this is a feature developed for a game or a sets of games.
