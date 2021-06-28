@@ -16,7 +16,7 @@ class CurrencyExchangeProvider implements ICurrencyExchangeProvider {
 
   @override
   Future<dynamic> gethistoricalexchangerate(String date) async {
-    final currencyResponse = await apiProvider.get(GET_HISTORICAL_RATE);
-    return currencyResponse;
+    final path = GET_HISTORICAL_RATE + date;
+    return await apiProvider.get(path);
   }
 }

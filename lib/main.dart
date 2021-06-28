@@ -6,12 +6,14 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:currencyexchangeservice/data/providers/currencyexchange/currencyexchange_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:currencyexchangeservice/globalwidgets/primary_button.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(GetMaterialApp(home: Home()));
 
-String EUROPE_CURRENCY_CODE = 'EUR';
-String US_CURRENCY_CODE = 'USD';
-String US_COUNTRY_CODE = 'US';
+const String EUROPE_CURRENCY_CODE = 'EUR';
+const String US_CURRENCY_CODE = 'USD';
+const String US_COUNTRY_CODE = 'US';
 
 final CurrencyExchangeProvider currencyExchangeApiProvider =
     new CurrencyExchangeProvider();
@@ -39,68 +41,135 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: Text("Currency Exchange Service")),
 
       // Replace the 8 lines Navigator.push by a simple Get.to(). You don't need context
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+      body: Container(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: 4 * Get.width / 5,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(currencyController.baseAmount,
-                    style: TextStyle(color: Colors.red)),
-                SizedBox(
-                  width: 20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(currencyController.baseAmount,
+                        style: TextStyle(color: Colors.red)),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    _buildCurrencyPickerDropDown(
+                        myCurrentCurrrencyCode, currencyController, true)
+                  ],
                 ),
-                _buildCurrencyPickerDropDown(
-                    myCurrentCurrrencyCode, currencyController, true)
-              ],
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Obx(() => Text(
-                    currencyController.convertAmount.value.toString(),
+                SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Obx(() => Text(
+                        currencyController.convertAmount.value.toString(),
+                        style: TextStyle(color: Colors.red))),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    _buildCurrencyPickerDropDown(
+                        defaultConvertCurrencyCode, currencyController, false)
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Obx(() => Text(currencyController.date.value.toString(),
                     style: TextStyle(color: Colors.red))),
                 SizedBox(
-                  width: 20,
+                  height: 20,
                 ),
-                _buildCurrencyPickerDropDown(
-                    defaultConvertCurrencyCode, currencyController, false)
-              ],
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            _buildDatePickerButton(context),
-            SizedBox(
-              height: 50,
-            ),
-            TextButton(
-                child: Text("Get Latest Rate"),
-                onPressed: () {
-                  var test = _getLatestExchangerate(
-                      currencyController,
-                      currencyController.baseCurrency.string,
-                      currencyController.convertCurrency.string);
-                }),
-            TextButton(child: Text("Get Historical Rate"), onPressed: () {})
-          ]),
+                _buildDatePickerButton(context, currencyController),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      PrimaryButton(
+                          width: Get.width / 4,
+                          height: Get.height / 12,
+                          textContent: "Get Latest Rate",
+                          onPressed: () {
+                            _getLatestExchangerate(
+                                currencyController,
+                                currencyController.baseCurrency.string,
+                                currencyController.convertCurrency.string);
+                          }),
+                      PrimaryButton(
+                          width: Get.width / 4,
+                          height: Get.height / 12,
+                          textContent: "Get Historical Rate",
+                          onPressed: () {
+                            _getHistoricalExchangeRate(
+                                currencyController,
+                                currencyController.baseCurrency.string,
+                                currencyController.convertCurrency.string,
+                                currencyController.date.string);
+                          }),
+                    ]),
+              ]),
+        ),
+      ),
     );
   }
 }
 
-Future<dynamic> _getLatestExchangerate(CurrencyExchangeController controller,
+//TO-DO: Refactor this part. Duplicated Code here and below
+void _getLatestExchangerate(CurrencyExchangeController controller,
     String baseCurrency, String convertCurrency) async {
   try {
     final response = await currencyExchangeApiProvider.getlatestexchangerate();
-    if (response["base"] == EUROPE_CURRENCY_CODE) {
+    if (baseCurrency == convertCurrency) {
+      controller.updateConvertAmount("1.0");
+    } else if (baseCurrency == EUROPE_CURRENCY_CODE) {
       String rate = response["rates"][convertCurrency].toString();
       controller.updateConvertAmount(rate);
+    } else if (convertCurrency == EUROPE_CURRENCY_CODE) {
+      double tempBaseRate = response["rates"][baseCurrency];
+      controller.updateConvertAmount((1.0 / tempBaseRate).toString());
+    } else {
+      double tempBaseRate = response["rates"][baseCurrency];
+      double tempConvertRate = response["rates"][convertCurrency];
+      controller
+          .updateConvertAmount((tempConvertRate / tempBaseRate).toString());
     }
-    return response;
+    return;
+  } catch (error) {
+    print(error);
+  }
+}
+
+//TO-DO: Refactor this part. Duplicated Code here and above
+void _getHistoricalExchangeRate(CurrencyExchangeController controller,
+    String baseCurrency, String convertCurrency, String date) async {
+  if (date == "" || date == null) {
+    return;
+  }
+  try {
+    final response =
+        await currencyExchangeApiProvider.gethistoricalexchangerate(date);
+    if (baseCurrency == convertCurrency) {
+      controller.updateConvertAmount("1.0");
+    } else if (baseCurrency == EUROPE_CURRENCY_CODE) {
+      String rate = response["rates"][convertCurrency].toString();
+      controller.updateConvertAmount(rate);
+    } else if (convertCurrency == EUROPE_CURRENCY_CODE) {
+      double tempBaseRate = response["rates"][baseCurrency];
+      controller.updateConvertAmount((1.0 / tempBaseRate).toString());
+    } else {
+      double tempBaseRate = response["rates"][baseCurrency];
+      double tempConvertRate = response["rates"][convertCurrency];
+      controller
+          .updateConvertAmount((tempConvertRate / tempBaseRate).toString());
+    }
+    return;
   } catch (error) {
     print(error);
   }
@@ -136,20 +205,18 @@ Widget _buildCurrencyDropdownItem(Country country) => Container(
       ),
     );
 
-Widget _buildDatePickerButton(context) => Container(
-    color: Colors.lightBlueAccent,
-    child: TextButton(
-        onPressed: () {
-          DatePicker.showDatePicker(context,
-              showTitleActions: true,
-              minTime: DateTime(2018, 3, 5),
-              maxTime: DateTime(2021, 12, 31), onChanged: (date) {
-            print('change $date');
-          }, onConfirm: (date) {
-            print('confirm $date');
-          }, currentTime: DateTime.now(), locale: LocaleType.en);
-        },
-        child: Text(
-          'Click here to choose a Date',
-          style: TextStyle(color: Colors.white),
-        )));
+Widget _buildDatePickerButton(context, CurrencyExchangeController controller) =>
+    PrimaryButton(
+      onPressed: () {
+        DatePicker.showDatePicker(context,
+            showTitleActions: true,
+            minTime: DateTime(2018, 3, 5),
+            maxTime: DateTime.now(),
+            onChanged: (date) {}, onConfirm: (date) {
+          final DateFormat formatter = DateFormat('yyyy-MM-dd');
+          final String formatted = formatter.format(date);
+          controller.updateDate(formatted);
+        }, currentTime: DateTime.now(), locale: LocaleType.en);
+      },
+      textContent: 'Click here to choose a Date',
+    );

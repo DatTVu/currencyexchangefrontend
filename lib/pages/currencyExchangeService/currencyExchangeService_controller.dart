@@ -3,11 +3,11 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/state_manager.dart';
 
 class CurrencyExchangeController extends GetxController {
-  var count = 0.obs;
   String baseAmount = "1.0";
   RxString convertAmount = "0.0".obs;
-  var baseCurrency = "0".obs;
-  var convertCurrency = "0".obs;
+  RxString date = "2021-6-6".obs;
+  RxString baseCurrency = "0".obs;
+  RxString convertCurrency = "0".obs;
   CurrencyExchangeController();
   changeBaseCurrency(RxString newCurrency) {
     baseCurrency = newCurrency;
@@ -21,5 +21,7 @@ class CurrencyExchangeController extends GetxController {
     convertAmount.value = newAmount;
   }
 
-  increment() => count++;
+  updateDate(String newDate) {
+    date.value = newDate;
+  }
 }
