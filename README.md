@@ -112,8 +112,15 @@ After finish with the prototype: use cdk destroy to release AWS resources.
 4. Get base_url from result of backend deployment. Base_url is the endpoint <br/>
    of API Gateway.Put base_url in api_provider.dart.
 5. Run: flutter pub get
-6. Run: flutter build apk to build Android. The build should be in <br/>
+6. Install Android Studio.
+7. Create an Android Virtual Device.
+6. In VSCode, CTRL + SHIFT + P. Flutter: Select Device. Select the Android Virtual Device.
+6. In VSCode, Hit Run and Debug.
+7. To run on real device: flutter build apk to build Android. The build should be in <br/>
 \currencyexchangefrontend\build\app\outputs\apk\release
+8. To install the apk, copy it to your device. Locate the apk using file explorer or 
+   ES Explorer. Click install and install anyway. You may have to enable developer mode
+   before able to install the apk.
 
 # Remaining Issues:
 
