@@ -1,5 +1,5 @@
 # Illustration:
-<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png width="250" height="250">
+<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/CES.png width="720" height="1080">
 # Requirement Analysis:
 
 Assumption: this is a feature developed for a game or a sets of games.
