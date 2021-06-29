@@ -29,7 +29,7 @@ need to know about API Gateway endpoint which makes extend our set of APIs reall
 easy. Frontend is built with Flutter which can release android, iOS and Web at ease <br/>
 Backend is deployed using CDK.
 
-<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/AWS_INFRA_ARCHITECTURE.png width="640" height="480">
+<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/AWS_INFRA_ARCHITECTURE.PNG width="640" height="480">
 
 # UI:
 
@@ -45,7 +45,7 @@ There are three main APIs in this application:
    API is likely be used by many games, thus it is better have only 1 updater/writer <br/>
    which is CronTab and many readers.
    
-<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/GetLatestRateSequence.png width="640" height="480">
+<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/GetLatestRateSequence.png width="800" height="600">
 
 2. CronTab: everyday, this API fetch the latest exchange rate and save it to <br/>
    DynamoDB. Currently fixer-api free tier offer daily update. If I purchase premium <br/>
@@ -54,7 +54,7 @@ There are three main APIs in this application:
    query the DB. If the item is not in the DB, fetch fixer-api and store the result <br/>
    in DynamoDB and cache the result for next users <br/>.
 
-<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/GetHistoricalRateSequence.png width="640" height="480">
+<img src=https://github.com/DatTVu/currencyexchangefrontend/blob/main/doc/GetHistoricalRateSequence.png width="800" height="600">
 
 # API Endpoinst:
 1. FrontEnd Repo:
